@@ -1,9 +1,5 @@
 package ua.yandex.skipass;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 /**
  *
  * @author Ольга
@@ -11,18 +7,18 @@ import java.util.Set;
 public class Systema {
 
     static private int lastUsedNumber;
-    Date current;
-    MyArrayList createdCards;
-    MyArrayList statisticsOfPassage;
+    private Date current;
+    private final MyArrayList createdCards;
+    private final MyArrayList statisticsOfPassage;
 
-    Systema(Date date) {
+    public Systema(Date date) {
         current = date;
         createdCards = new MyArrayList();
         statisticsOfPassage = new MyArrayList();
         lastUsedNumber = -1;
     }
 
-    SkiPass create(String type) {
+    public SkiPass create(String type) {
         int accessory;
         SkiPass newSkiPass;
         if ("Season".equals(type)) {
@@ -31,22 +27,27 @@ public class Systema {
             int size = type.length();
             accessory = Integer.parseInt(type.substring(size - 3, size));
             type = type.substring(0, size - 3);
-            if (type.equals("WeekendDays")) {
-                if (accessory + current.dayOfWeek() - 1 > 7) {
-                    throw new MyException("This weekend has not enough days");
-                }
-                newSkiPass = new WeekendSkiPassSomeDays(current, accessory);
-            } else if (type.equals("WorkdayDays")) {
-                if (accessory + current.dayOfWeek() - 1 > 5) {
-                    throw new MyException("This workdayshas not enough days");
-                }
-                newSkiPass = new WorkdaySkiPassSomeDays(current, accessory);
-            } else if ("WeekendRises".equals(type)) {
-                newSkiPass = new WeekendSkiPassSomeRises(accessory);
-            } else if ("WorkdayRises".equals(type)) {
-                newSkiPass = new WorkdaySkiPassSomeRises(accessory);
-            } else {
-                throw new MyException("not existing type");
+            switch (type) {
+                case "WeekendDays":
+                    if (accessory + current.dayOfWeek() - 1 > 7) {
+                        throw new MyException("This weekend has not enough days");
+                    }
+                    newSkiPass = new WeekendSkiPassSomeDays(current, accessory);
+                    break;
+                case "WorkdayDays":
+                    if (accessory + current.dayOfWeek() - 1 > 5) {
+                        throw new MyException("This workdayshas not enough days");
+                    }
+                    newSkiPass = new WorkdaySkiPassSomeDays(current, accessory);
+                    break;
+                case "WeekendRises":
+                    newSkiPass = new WeekendSkiPassSomeRises(accessory);
+                    break;
+                case "WorkdayRises":
+                    newSkiPass = new WorkdaySkiPassSomeRises(accessory);
+                    break;
+                default:
+                    throw new MyException("not existing type");
             }
         }
         createdCards.add(type);
@@ -59,7 +60,7 @@ public class Systema {
     public boolean checkCard(SkiPass card, Date currentDate) {
         boolean flag = card.check(currentDate);
         String inf = String.valueOf(card.uniqueNumber);
-        if (flag == true) {
+        if (flag) {
             inf += '+';
         } else {
             inf += '-';
@@ -80,7 +81,8 @@ public class Systema {
             temp = temp.substring(0, temp.length() - 1);
             uniqueNumber = (int) Integer.parseInt(temp);
             System.out.write(uniqueNumber);
-            if (success == flag && type.equals(createdCards.get(uniqueNumber))) {
+            if (success == flag
+                    && type.equals(createdCards.get(uniqueNumber))) {
                 counter++;
             }
         }
