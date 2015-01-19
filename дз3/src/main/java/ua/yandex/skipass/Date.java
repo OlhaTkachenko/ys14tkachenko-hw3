@@ -2,10 +2,12 @@ package ua.yandex.skipass;
 
 public class Date {
 
+    private int year, month, day, hours;
+    final private int[] maxDaysInMonths;
 
-    public int year, month, day, hours;
-    final int MaxDaysInMonths[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public Date(int newYear, int newMonth, int newDay, int newHours) {
+        this.maxDaysInMonths = new int[]{0, 31, 29, 31, 30, 31,
+            30, 31, 31, 30, 31, 30, 31};
         if (newYear >= 0) {
             year = newYear;
         } else {
@@ -16,7 +18,7 @@ public class Date {
         } else {
             throw new MyException("incorrect date");
         }
-        if (newDay > 0 && MaxDaysInMonths[month] >= newDay) {
+        if (newDay > 0 && maxDaysInMonths[month] >= newDay) {
             if (month != 2 || day != 29) {
                 day = newDay;
 
@@ -55,12 +57,12 @@ public class Date {
     }
 
     public void addDay() {
-        if (month == 2 && (!isLeapYear(year)) && day == 28) {
+        if (month == 2 && !isLeapYear(year) && day == 28) {
             day = 1;
             month = 3;
             return;
         }
-        if (day < MaxDaysInMonths[month]) {
+        if (day < maxDaysInMonths[month]) {
             day++;
         } else {
             day = 1;
@@ -129,55 +131,72 @@ public class Date {
         resultDate.month = 9;
         return resultDate;
     }
-    public boolean equalsWithoutHours(Date date){
-        if(date.year != year) return false;
-        if(date.month != month) return false;
+
+    public boolean equalsWithoutHours(Date date) {
+        if (date.year != year) {
+            return false;
+        }
+        if (date.month != month) {
+            return false;
+        }
         return date.day == day;
     }
-   public int dayOfWeek(){
-    int startYear = 2007;//1.01.2007-monday;
-    int daysOf = 0;
-    while (startYear > year) {
-        daysOf += 371 - 365;
-        if(isLeapYear(startYear)) daysOf--;
-        startYear--;
+
+    public int dayOfWeek() {
+        int startYear = 2007;//1.01.2007-monday;
+        int daysOf = 0;
+        while (startYear > year) {
+            daysOf += 371 - 365;
+            if (isLeapYear(startYear)) {
+                daysOf--;
+            }
+            startYear--;
+            daysOf %= 7;
+            //startYear -= 28;
+        }
+        while (startYear < year) {
+            daysOf += 365;
+            if (isLeapYear(startYear)) {
+                daysOf++;
+            }
+            startYear++;
+            daysOf %= 7;
+        }
+        int startMonth = 1;
+        while (startMonth < month) {
+            daysOf += maxDaysInMonths[startMonth];
+            startMonth++;
+            daysOf %= 7;
+        }
+        if (month > 2 && !(isLeapYear(year))) {
+            daysOf += 6;
+        }
+        daysOf += day;
         daysOf %= 7;
-        //startYear -= 28;
+        if (daysOf == 0) {
+            daysOf = 7;
+        }
+        return daysOf;
     }
-    while (startYear < year)
-    {
-        daysOf += 365;
-        if(isLeapYear(startYear)) daysOf++;
-        startYear++;
-        daysOf %= 7;
+
+    public int partOfDay() {
+        if (hours < 13 && hours >= 9) {
+            return 1;
+        }
+        if (hours >= 13 && hours < 17) {
+            return 2;
+        }
+        return 0;
     }
-    int startMonth = 1;
-    while (startMonth < month)
-    {
-        daysOf += MaxDaysInMonths[startMonth];
-        startMonth++;
-        daysOf %= 7;
+
+    String dateToString() {
+        String temp = String.valueOf(hours);
+        temp += "h_";
+        temp += String.valueOf(day);
+        temp += '.';
+        temp += String.valueOf(month);
+        temp += '.';
+        temp += String.valueOf(year);
+        return temp;
     }
-    if(month>2 && !(isLeapYear(year)))daysOf+=6;
-    daysOf += day;
-    daysOf %= 7;
-    if(daysOf == 0)daysOf=7;
-    return daysOf;
-  } 
-  
- public int partOfDay(){
-   if( hours < 13 && hours >=9 ) return 1;
-   if( hours >= 13 && hours <17 )  return 2;
-   return 0;
- }
- String dateToString(){
-   String temp = String.valueOf(hours);
-   temp+="h_";
-   temp += String.valueOf(day);
-   temp+='.';
-   temp += String.valueOf(month);
-   temp+='.';
-   temp += String.valueOf(year);
-   return temp;
- }
 }

@@ -6,7 +6,8 @@ public class WorkdaySkiPassSomeRises extends SkiPass {
 
     WorkdaySkiPassSomeRises(int times) {
         if (!(times == 10 || times == 20 || times == 50 || times == 100)) {
-            throw new MyException("You can not ctreate skipass with this amount of rises");
+            throw new MyException("You can not ctreate "
+                    + "skipass with this amount of rises");
         }
         rises = times;
         type = Type.WorkdayRises;
