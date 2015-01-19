@@ -48,7 +48,7 @@ public class WeekendSkiPassSomeRisesTest {
     public void testCheckYes() {
         System.out.println("check");
         Date date = mock(Date.class);
-        WeekendSkiPassSomeRises instance = new WeekendSkiPassSomeRises(1);
+        WeekendSkiPassSomeRises instance = new WeekendSkiPassSomeRises(100);
         boolean expResult = true;
         when(date.dayOfWeek()).thenReturn(6);
         boolean result = instance.check(date);
@@ -59,7 +59,7 @@ public class WeekendSkiPassSomeRisesTest {
     public void testCheckNo() {
         System.out.println("check");
         Date date = mock(Date.class);
-        WeekendSkiPassSomeRises instance = new WeekendSkiPassSomeRises(1);
+        WeekendSkiPassSomeRises instance = new WeekendSkiPassSomeRises(100);
         boolean expResult = false;
         when(date.dayOfWeek()).thenReturn(1);
         boolean result = instance.check(date);
@@ -69,7 +69,7 @@ public class WeekendSkiPassSomeRisesTest {
     public void testCheckBehavior() {
         System.out.println("check behavior");
         Date date = mock(Date.class);
-        WeekendSkiPassSomeRises instance = new WeekendSkiPassSomeRises(1);
+        WeekendSkiPassSomeRises instance = new WeekendSkiPassSomeRises(100);
         //when(date.dayOfWeek()).thenReturn(6);
         boolean result = instance.check(date);
         verify(date).dayOfWeek();
