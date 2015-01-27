@@ -47,38 +47,37 @@ public class SystemaTest {
     @Test
     public void testCreate() {
         System.out.println("create");
-        String type = "Season";
+        TypeForCreation type = TypeForCreation.Season;
         Date current = mock(Date.class);
         Systema instance = new Systema(current);
         instance.create(type);
         verify(current).firstDayInSeason();
     }
 
-    /**
-     * Test of checkCard method, of class Systema.
-     */
+
     @Test
     public void testCheckCard() {
         System.out.println("checkCard");
-        SkiPass card = mock(SkiPass.class);
+        TypeForCreation type = TypeForCreation.Season;
         Date currentDate = mock(Date.class);
+        Date date = mock(Date.class);
+        when(currentDate.firstDayInSeason()).thenReturn(currentDate);
+        when(date.firstDayInSeason()).thenReturn(date);
         Systema instance = new Systema(currentDate);
-        boolean expResult = false;
-        boolean result = instance.checkCard(card, currentDate);
-        verify(card).check(currentDate);
+        Card card = instance.create(type);
+        boolean result = instance.checkCard(card, date);
+        verify(date).firstDayInSeason();
     }
 
-    /**
-     * Test of statisticsForOneType method, of class Systema.
-     */
+
     @Test
     public void testStatisticsForOneType() {
         System.out.println("statisticsForOneType");
-        String type = "Season";
+        String type = (TypeForCreation.Season).toString();
         Date current = new Date(2015, 1, 12, 1);
         Systema systema = new Systema(current);
-        SeasonSkiPass s = (SeasonSkiPass) systema.create("Season");
-        WorkdaySkiPassSomeRises s2 = (WorkdaySkiPassSomeRises) systema.create("WorkdayRises010");
+        Card s = systema.create(TypeForCreation.Season);
+        Card s2 = systema.create(TypeForCreation.WorkdaysRises20);
         systema.checkCard(s, current);
         systema.checkCard(s2, current);
         boolean success = true;
@@ -87,17 +86,15 @@ public class SystemaTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of statistics method, of class Systema.
-     */
+
     @Test
     public void testStatistics() {
         System.out.println("statistics");
         boolean success = true;
         Date current = new Date(2015, 1, 12, 1);
         Systema systema = new Systema(current);
-        SeasonSkiPass s = (SeasonSkiPass) systema.create("Season");
-        WeekendSkiPassSomeRises s2 = (WeekendSkiPassSomeRises) systema.create("WeekendRises100");
+        Card s = systema.create(TypeForCreation.Season);
+        Card s2 = systema.create(TypeForCreation.WeekendRises20);
         systema.checkCard(s, current);
         systema.checkCard(s2, current);
         int expResult = 1;
